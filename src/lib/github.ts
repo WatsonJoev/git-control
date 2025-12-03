@@ -30,6 +30,22 @@ export interface Collaborator {
   role_name?: string;
 }
 
+export interface AggregatedUser {
+  id: number;
+  login: string;
+  avatar_url: string;
+  repos: {
+    name: string;
+    full_name: string;
+    owner: string;
+    permissions: {
+      admin: boolean;
+      push: boolean;
+      pull: boolean;
+    };
+  }[];
+}
+
 export interface Invitation {
   id: number;
   invitee: {
@@ -115,4 +131,70 @@ export async function disconnectGitHub(userId: string) {
     .eq('user_id', userId);
 
   if (error) throw error;
+}
+
+export async function listAllCollaborators(userId: string, repos: Repository[]): Promise<AggregatedUser[]> {
+  const userMap = new Map<string, AggregatedUser>();
+
+  // Fetch collaborators for each repo in parallel (batch of 5 to avoid rate limiting)
+  const batchSize = 5;
+  for (let i = 0; i < repos.length; i += batchSize) {
+    const batch = repos.slice(i, i + batchSize);
+    const results = await Promise.all(
+      batch.map(async (repo) => {
+        try {
+          const { collaborators } = await listCollaborators(userId, repo.owner.login, repo.name);
+          return { repo, collaborators };
+        } catch {
+          return { repo, collaborators: [] };
+        }
+      })
+    );
+
+    for (const { repo, collaborators } of results) {
+      for (const collab of collaborators) {
+        const existing = userMap.get(collab.login);
+        const repoInfo = {
+          name: repo.name,
+          full_name: repo.full_name,
+          owner: repo.owner.login,
+          permissions: collab.permissions,
+        };
+
+        if (existing) {
+          existing.repos.push(repoInfo);
+        } else {
+          userMap.set(collab.login, {
+            id: collab.id,
+            login: collab.login,
+            avatar_url: collab.avatar_url,
+            repos: [repoInfo],
+          });
+        }
+      }
+    }
+  }
+
+  return Array.from(userMap.values()).sort((a, b) => b.repos.length - a.repos.length);
+}
+
+export async function removeCollaboratorFromAllRepos(
+  userId: string,
+  username: string,
+  repos: { owner: string; name: string }[]
+): Promise<{ success: string[]; failed: string[] }> {
+  const success: string[] = [];
+  const failed: string[] = [];
+
+  // Remove from repos sequentially to avoid rate limiting
+  for (const repo of repos) {
+    try {
+      await removeCollaborator(userId, repo.owner, repo.name, username);
+      success.push(`${repo.owner}/${repo.name}`);
+    } catch {
+      failed.push(`${repo.owner}/${repo.name}`);
+    }
+  }
+
+  return { success, failed };
 }
