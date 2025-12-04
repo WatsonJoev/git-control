@@ -1,0 +1,10 @@
+# Example local configuration file
+# Copy this to supabase/config.local.toml and fill in your project_id
+# This file is gitignored and will not be committed
+
+project_id = "your-project-id-here"
+
+# You can find your project_id in:
+# 1. Supabase Dashboard → Project Settings → General → Reference ID
+# 2. Or use: supabase link --project-ref your-project-ref
+

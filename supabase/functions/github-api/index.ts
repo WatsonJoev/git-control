@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { decrypt } from "../_shared/encryption.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -21,7 +22,14 @@ async function getAccessToken(userId: string): Promise<string> {
     throw new Error('GitHub token not found. Please reconnect your GitHub account.');
   }
 
-  return data.access_token;
+  // Decrypt the token before returning
+  try {
+    const decryptedToken = await decrypt(data.access_token);
+    return decryptedToken;
+  } catch (decryptError) {
+    console.error('Failed to decrypt token:', decryptError);
+    throw new Error('Failed to decrypt GitHub token. Please reconnect your GitHub account.');
+  }
 }
 
 async function githubRequest(endpoint: string, accessToken: string, options: RequestInit = {}) {

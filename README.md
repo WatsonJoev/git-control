@@ -1,138 +1,64 @@
 # CollabManager
 
-A powerful, intuitive dashboard for managing GitHub repository collaborators. Streamline your team's access management with two flexible access modes: repository-based and user-based control.
+<div align="center">
 
-![CollabManager](https://img.shields.io/badge/CollabManager-GitHub%20Management-blue)
-![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6?logo=typescript)
-![Vite](https://img.shields.io/badge/Vite-5.4.19-646CFF?logo=vite)
+**A powerful, intuitive dashboard for managing GitHub repository collaborators**
 
-## 📋 Table of Contents
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-5.4.19-646CFF?logo=vite)](https://vitejs.dev/)
 
-- [Overview](#overview)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Usage Guide](#usage-guide)
-- [Development](#development)
-- [Deployment](#deployment)
-- [Environment Variables](#environment-variables)
-- [Contributing](#contributing)
-- [License](#license)
+[Features](#-features) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Contributing](#-contributing)
 
-## 🎯 Overview
+</div>
 
-CollabManager is a modern web application that simplifies GitHub collaborator management. Whether you need to manage access per repository or track users across all your repositories, CollabManager provides a clean, professional interface to handle all your collaboration needs.
-
-### Key Capabilities
-
-- **Repository-Based Access**: Manage collaborators for individual repositories
-- **User-Based Access**: View and manage all collaborators across all repositories
-- **Bulk Operations**: Remove users from multiple repositories simultaneously
-- **Real-time Updates**: Instant synchronization with GitHub
-- **Secure Authentication**: Enterprise-grade OAuth integration with encrypted token storage
+---
 
 ## ✨ Features
 
-### Repository Access Mode
-- Browse and search through all your repositories
-- View collaborators and pending invitations for each repository
-- Invite new collaborators with specific permissions (Read, Write, Admin)
-- Remove collaborators from individual repositories
-- Track permission levels for each collaborator
+### 🔀 Dual Access Modes
 
-### User Access Mode
-- Aggregate view of all unique collaborators across repositories
+**Repository-Based Access**
+- Manage collaborators for individual repositories
+- Invite and remove collaborators with specific permissions
+- Track pending invitations
+- View permission levels (Read, Write, Admin)
+
+**User-Based Access**
+- Aggregate view of all collaborators across repositories
 - See which repositories each user has access to
-- Expandable user cards showing detailed repository access
-- Bulk removal: Remove a user from all repositories with a single action
-- Permission overview for each user across all repositories
+- Bulk removal: Remove users from all repositories at once
+- Expandable user cards with detailed repository access
 
-### Additional Features
+### 🔒 Security
+
 - **Secure OAuth**: GitHub OAuth integration with encrypted token storage
-- **Real-time Sync**: Automatic updates when changes are made
-- **Search Functionality**: Quick search across repositories and users
-- **Professional UI**: Clean, monochrome design optimized for productivity
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
-- **Error Handling**: Comprehensive error messages and recovery options
+- **Row Level Security**: Database-level access control via Supabase RLS
+- **Token Encryption**: GitHub tokens encrypted at rest
+- **No Client Secrets**: All sensitive operations handled server-side
 
-## 🛠 Tech Stack
+### 🚀 Performance
 
-### Frontend
-- **React 18.3.1** - UI library
-- **TypeScript 5.8.3** - Type safety
-- **Vite 5.4.19** - Build tool and dev server
-- **Tailwind CSS 3.4.17** - Utility-first CSS framework
-- **shadcn/ui** - High-quality React components
-- **Radix UI** - Accessible component primitives
-- **Lucide React** - Icon library
-- **React Router 6.30.1** - Client-side routing
-- **TanStack Query 5.83.0** - Data fetching and caching
-- **Zod 3.25.76** - Schema validation
-- **Sonner** - Toast notifications
+- **Real-time Updates**: Instant synchronization with GitHub
+- **Fast Search**: Quick filtering across repositories and users
+- **Optimized Queries**: Efficient data fetching with React Query
+- **Responsive Design**: Works seamlessly on all devices
 
-### Backend & Services
-- **Supabase** - Backend-as-a-Service (Authentication, Database, Edge Functions)
-- **GitHub API** - Repository and collaborator management
-- **Supabase Edge Functions** - Serverless functions for GitHub API integration
-
-### Development Tools
-- **ESLint** - Code linting
-- **TypeScript ESLint** - TypeScript-specific linting
-- **PostCSS** - CSS processing
-- **Autoprefixer** - CSS vendor prefixing
-
-## 📁 Project Structure
-
-```
-git-control/
-├── public/                 # Static assets
-├── src/
-│   ├── components/         # React components
-│   │   ├── Dashboard.tsx   # Main dashboard with dual access modes
-│   │   ├── LandingPage.tsx # Landing page with authentication
-│   │   └── ui/             # shadcn/ui components
-│   ├── hooks/              # Custom React hooks
-│   │   ├── useAuth.ts      # Authentication hook
-│   │   └── use-mobile.tsx  # Mobile detection hook
-│   ├── integrations/       # Third-party integrations
-│   │   └── supabase/       # Supabase client and types
-│   ├── lib/                # Utility functions
-│   │   ├── github.ts       # GitHub API wrapper
-│   │   └── utils.ts        # General utilities
-│   ├── pages/              # Page components
-│   │   ├── Index.tsx       # Main page router
-│   │   └── NotFound.tsx   # 404 page
-│   ├── App.tsx             # Root component
-│   ├── main.tsx            # Application entry point
-│   └── index.css           # Global styles
-├── supabase/
-│   ├── functions/          # Edge Functions
-│   │   ├── github-api/     # GitHub API proxy
-│   │   └── github-oauth/   # OAuth handler
-│   └── migrations/         # Database migrations
-├── package.json            # Dependencies and scripts
-├── tailwind.config.ts     # Tailwind configuration
-├── tsconfig.json           # TypeScript configuration
-└── vite.config.ts          # Vite configuration
-```
-
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- **Node.js** 18+ (recommended: use [nvm](https://github.com/nvm-sh/nvm))
-- **npm** or **pnpm** or **bun**
-- **Supabase Account** - For backend services
-- **GitHub Account** - For OAuth and repository access
+- Node.js 18+ ([install with nvm](https://github.com/nvm-sh/nvm))
+- A [Supabase](https://supabase.com) account
+- A [GitHub OAuth App](https://github.com/settings/developers)
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <YOUR_GIT_URL>
-   cd git-control
+   git clone https://github.com/yourusername/collabmanager.git
+   cd collabmanager
    ```
 
 2. **Install dependencies**
@@ -140,219 +66,204 @@ git-control/
    npm install
    # or
    pnpm install
-   # or
-   bun install
    ```
 
 3. **Set up environment variables**
    
-   Create a `.env.local` file in the root directory:
+   Create a `.env.local` file:
    ```env
    VITE_SUPABASE_URL=your_supabase_project_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
    ```
 
-4. **Configure Supabase**
+4. **Set up Supabase**
    
    - Create a new Supabase project
-   - Set up the database schema (see `supabase/migrations/`)
-   - Configure Edge Functions for GitHub API and OAuth
-   - Set up GitHub OAuth App in GitHub settings
+   - Run the migration: `supabase/migrations/20251203174919_*.sql`
+   - Configure Edge Functions (see [Setup Guide](#-setup-guide))
 
-5. **Start the development server**
+5. **Start development server**
    ```bash
    npm run dev
    ```
 
-   The application will be available at `http://localhost:5173`
+   Visit `http://localhost:5173`
 
-## 📖 Usage Guide
+## 📖 Setup Guide
 
-### First Time Setup
+### Supabase Configuration
 
-1. **Sign Up / Sign In**
-   - Create an account using email and password
-   - Or sign in if you already have an account
+1. **Create Supabase Project**
+   - Go to [supabase.com](https://supabase.com)
+   - Create a new project
+   - Note your project URL and anon key
 
-2. **Connect GitHub**
-   - Click "Connect with GitHub" button
-   - Authorize the application to access your repositories
-   - Grant necessary permissions for collaborator management
+2. **Link Supabase Project (for local development)**
+   
+   If using Supabase CLI for local development:
+   ```bash
+   # Link to your remote Supabase project
+   supabase link --project-ref your-project-ref
+   ```
+   
+   This automatically sets `project_id` in `config.toml`.
+   
+   Alternatively, create `supabase/config.local.toml`:
+   ```toml
+   project_id = "your-project-id"
+   ```
+   
+   **Note**: `project_id` is only needed for local CLI operations. Production Edge Functions use `SUPABASE_URL` environment variable instead.
 
-3. **Choose Access Mode**
-   - **Repository Access**: Manage collaborators per repository
-   - **User Access**: View and manage all collaborators across repositories
+3. **Run Database Migration**
+   ```bash
+   # Using Supabase CLI
+   supabase db push
+   
+   # Or manually run the SQL file in Supabase Dashboard:
+   # Go to SQL Editor → New Query → Paste contents of supabase/migrations/20251203174919_*.sql
+   ```
 
-### Repository Access Mode
+4. **Generate Encryption Key**
 
-1. **Select a Repository**
-   - Browse the list of repositories on the left
-   - Use the search bar to filter repositories
-   - Click on a repository to view its collaborators
+   Generate a secure encryption key for token encryption:
+   ```bash
+   node scripts/generate-encryption-key.js
+   ```
+   
+   Or manually:
+   ```bash
+   # Using Node.js
+   node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+   
+   # Using OpenSSL
+   openssl rand -base64 32
+   ```
 
-2. **Manage Collaborators**
-   - View current collaborators and their permissions
-   - Click "Invite" to add a new collaborator
-   - Enter GitHub username and select permission level
-   - Remove collaborators using the remove button
+5. **Configure Edge Functions**
 
-### User Access Mode
+   Set these environment variables in Supabase Dashboard → Edge Functions → Settings:
+   - `GITHUB_CLIENT_ID` - Your GitHub OAuth App Client ID
+   - `GITHUB_CLIENT_SECRET` - Your GitHub OAuth App Client Secret
+   - `ENCRYPTION_KEY` - Your base64-encoded 32-byte encryption key (generated above)
+   - `SUPABASE_URL` - Your Supabase project URL
+   - `SUPABASE_SERVICE_ROLE_KEY` - Your Supabase service role key
+   
+   **Important**: The same `ENCRYPTION_KEY` must be used for all Edge Functions that need to encrypt/decrypt tokens.
 
-1. **View All Collaborators**
-   - Switch to "User Access" tab
-   - See all unique collaborators across all repositories
-   - View how many repositories each user has access to
+6. **Deploy Edge Functions**
+   ```bash
+   supabase functions deploy github-oauth
+   supabase functions deploy github-api
+   ```
 
-2. **Expand User Details**
-   - Click on a user card to expand and see all repositories
-   - View permission levels for each repository
+### GitHub OAuth App Setup
 
-3. **Bulk Removal**
-   - Click "Remove from all" button on any user
-   - Confirm the action in the dialog
-   - The user will be removed from all listed repositories
+1. Go to [GitHub Settings → Developer settings → OAuth Apps](https://github.com/settings/developers)
+2. Click "New OAuth App"
+3. Fill in:
+   - **Application name**: CollabManager
+   - **Homepage URL**: `http://localhost:5173` (dev) or your production URL
+   - **Authorization callback URL**: `http://localhost:5173` (dev) or your production URL
+4. Copy the **Client ID** and create a **Client Secret**
+5. Add these to your Supabase Edge Functions environment variables
 
-## 💻 Development
+## 📚 Documentation
+
+### Project Structure
+
+```
+collabmanager/
+├── src/
+│   ├── components/      # React components
+│   │   ├── Dashboard.tsx    # Main dashboard
+│   │   ├── LandingPage.tsx   # Landing page
+│   │   └── ui/              # shadcn/ui components
+│   ├── hooks/          # Custom React hooks
+│   ├── lib/            # Utility functions
+│   │   └── github.ts   # GitHub API wrapper
+│   ├── integrations/   # Third-party integrations
+│   │   └── supabase/   # Supabase client
+│   └── pages/          # Page components
+├── supabase/
+│   ├── functions/      # Edge Functions
+│   └── migrations/     # Database migrations
+└── public/             # Static assets
+```
+
+### Usage
+
+#### Repository Access Mode
+
+1. Select a repository from the list
+2. View current collaborators and their permissions
+3. Click "Invite" to add a new collaborator
+4. Remove collaborators using the remove button
+
+#### User Access Mode
+
+1. Switch to "User Access" tab
+2. Browse all unique collaborators
+3. Expand user cards to see repository access
+4. Use "Remove from all" for bulk operations
+
+### API Reference
+
+The application uses Supabase Edge Functions to interact with GitHub API:
+
+- `github-oauth`: Handles OAuth flow and token exchange
+- `github-api`: Proxies GitHub API requests with user tokens
+
+See `supabase/functions/` for implementation details.
+
+## 🛠️ Development
 
 ### Available Scripts
 
 ```bash
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Build for development
-npm run build:dev
-
-# Preview production build
-npm run preview
-
-# Run linter
-npm run lint
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run preview  # Preview production build
+npm run lint     # Run ESLint
 ```
 
-### Code Style
+### Tech Stack
 
-- **TypeScript**: Strict mode enabled
-- **ESLint**: Configured with React and TypeScript rules
-- **Formatting**: Prettier (via ESLint)
-- **Components**: Functional components with hooks
-- **Styling**: Tailwind CSS utility classes
-
-### Key Components
-
-- **Dashboard**: Main application interface with dual access modes
-- **LandingPage**: Authentication and onboarding
-- **github.ts**: GitHub API integration layer
-- **useAuth**: Authentication state management
+- **Frontend**: React 18, TypeScript, Vite
+- **UI**: Tailwind CSS, shadcn/ui, Radix UI
+- **Backend**: Supabase (Database, Auth, Edge Functions)
+- **State**: TanStack Query, React Router
+- **Validation**: Zod
 
 ## 🚢 Deployment
 
-### Deploy to Vercel
+### Vercel (Recommended)
 
-Vercel is the recommended deployment platform for this application. You can deploy using the Vercel CLI or through the Vercel dashboard.
+1. Push your code to GitHub
+2. Import project in [Vercel](https://vercel.com)
+3. Add environment variables:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+4. Deploy!
 
-#### Option 1: Deploy via Vercel Dashboard (Recommended)
+See [vercel.json](./vercel.json) for configuration.
 
-1. **Push your code to GitHub**
-   ```bash
-   git add .
-   git commit -m "Prepare for deployment"
-   git push origin main
-   ```
+### Other Platforms
 
-2. **Import project to Vercel**
-   - Go to [vercel.com](https://vercel.com) and sign in
-   - Click "Add New Project"
-   - Import your GitHub repository
-   - Vercel will auto-detect Vite settings
-
-3. **Configure Environment Variables**
-   - In the project settings, go to "Environment Variables"
-   - Add the following:
-     - `VITE_SUPABASE_URL` = Your Supabase project URL
-     - `VITE_SUPABASE_ANON_KEY` = Your Supabase anonymous key
-
-4. **Deploy**
-   - Click "Deploy"
-   - Vercel will build and deploy your application
-   - Your app will be live at `https://your-project.vercel.app`
-
-#### Option 2: Deploy via Vercel CLI
-
-```bash
-# Install Vercel CLI globally
-npm i -g vercel
-
-# Login to Vercel (first time only)
-vercel login
-
-# Deploy (follow the prompts)
-vercel
-
-# For production deployment
-vercel --prod
-```
-
-#### Vercel Configuration
-
-The project includes a `vercel.json` configuration file that:
-- Sets up proper routing for React Router
-- Configures build settings for Vite
-- Handles SPA routing correctly
-
-### Deploy to Other Platforms
-
-#### Netlify
-
-```bash
-# Install Netlify CLI
-npm i -g netlify-cli
-
-# Build and deploy
-npm run build
-netlify deploy --prod
-```
-
-#### Other Platforms
-
-Since this is a static Vite application, you can deploy to any static hosting service:
-- **Cloudflare Pages**: Connect your GitHub repo
-- **AWS Amplify**: Import from GitHub
-- **GitHub Pages**: Use GitHub Actions for deployment
-- **Any static host**: Upload the `dist` folder after running `npm run build`
-
-### Environment Variables
-
-Ensure the following environment variables are set in your deployment platform:
-
-- `VITE_SUPABASE_URL` - Your Supabase project URL
-- `VITE_SUPABASE_ANON_KEY` - Your Supabase anonymous key
-
-## 🔐 Environment Variables
-
-Required environment variables:
-
-| Variable | Description |
-|----------|-------------|
-| `VITE_SUPABASE_URL` | Your Supabase project URL |
-| `VITE_SUPABASE_ANON_KEY` | Your Supabase anonymous key |
-
-Optional environment variables:
-
-| Variable | Description |
-|----------|-------------|
-| `VITE_GITHUB_CLIENT_ID` | GitHub OAuth App Client ID (if not using Supabase Edge Functions) |
+This is a static Vite app, deployable to:
+- Netlify
+- Cloudflare Pages
+- AWS Amplify
+- GitHub Pages
+- Any static host
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
+Contributions are welcome! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
@@ -361,26 +272,38 @@ Contributions are welcome! Please follow these steps:
 - Follow TypeScript best practices
 - Write meaningful commit messages
 - Add comments for complex logic
-- Ensure all tests pass (if applicable)
 - Update documentation as needed
+- Follow the existing code style
+
+## 🔐 Security
+
+We take security seriously. Please review our [Security Policy](SECURITY.md) before reporting vulnerabilities.
+
+**Important**: Never commit `.env` files or expose API keys. All secrets should be environment variables.
 
 ## 📝 License
 
-This project is private and proprietary.
-
-## 🔗 Links
-
-- **GitHub**: [Repository URL]
-- **Live Demo**: [Add your Vercel deployment URL]
-- **Documentation**: [Add documentation link if available]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
-- UI components from [shadcn/ui](https://ui.shadcn.com)
-- Icons from [Lucide](https://lucide.dev)
-- Backend powered by [Supabase](https://supabase.com)
-- Deployed on [Vercel](https://vercel.com)
+- [shadcn/ui](https://ui.shadcn.com) - Beautiful UI components
+- [Lucide](https://lucide.dev) - Icon library
+- [Supabase](https://supabase.com) - Backend infrastructure
+- [Vercel](https://vercel.com) - Deployment platform
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/yourusername/collabmanager/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/collabmanager/discussions)
+- **Email**: [your-email@example.com]
 
 ---
 
+<div align="center">
+
 **Made with ❤️ for efficient GitHub collaboration management**
+
+[⭐ Star us on GitHub](https://github.com/yourusername/collabmanager) • [📖 Documentation](#-documentation) • [🐛 Report Bug](https://github.com/yourusername/collabmanager/issues)
+
+</div>

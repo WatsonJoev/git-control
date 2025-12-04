@@ -1,15 +1,24 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { encrypt } from "../_shared/encryption.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Get GitHub OAuth credentials from environment variables
+// These should be set in Supabase Dashboard → Edge Functions → Settings
+// For local development, they can be in .env file (see README)
 const GITHUB_CLIENT_ID = Deno.env.get('GITHUB_CLIENT_ID');
 const GITHUB_CLIENT_SECRET = Deno.env.get('GITHUB_CLIENT_SECRET');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+// Validate required environment variables
+if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) {
+  throw new Error('GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET must be set in environment variables');
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -66,14 +75,17 @@ serve(async (req) => {
       const userData = await userResponse.json();
       console.log('GitHub user:', userData.login);
 
-      // Store token in database
+      // Encrypt the access token before storing
+      const encryptedToken = await encrypt(accessToken);
+
+      // Store encrypted token in database
       const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
 
       const { error: upsertError } = await supabase
         .from('github_tokens')
         .upsert({
           user_id,
-          access_token: accessToken,
+          access_token: encryptedToken, // Store encrypted token
           github_username: userData.login,
           github_avatar_url: userData.avatar_url,
           github_id: userData.id,

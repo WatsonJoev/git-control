@@ -1,4 +1,24 @@
-project_id = "your-project-id"
+# Supabase project configuration
+# This file is used by Supabase CLI for local development
+#
+# To set project_id, use one of these methods:
+#
+# Method 1 (Recommended): Use Supabase CLI link command
+#   supabase link --project-ref your-project-ref
+#   This automatically sets project_id in config.toml
+#
+# Method 2: Create supabase/config.local.toml (gitignored)
+#   project_id = "your-project-id"
+#   This file overrides config.toml and is not committed to git
+#
+# Method 3: Manually edit this file
+#   project_id = "your-project-id"
+#   Note: This will be committed to git, so only use for open-source projects
+#
+# For production Edge Functions:
+#   - project_id is NOT needed
+#   - Use SUPABASE_URL environment variable instead
+#   - Set in Supabase Dashboard → Edge Functions → Settings
 
 [functions.github-oauth]
 verify_jwt = false
