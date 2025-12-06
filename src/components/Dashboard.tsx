@@ -4,11 +4,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Checkbox } from '@/components/ui/checkbox';
 import { 
   LogOut, 
   Users, 
@@ -24,7 +26,10 @@ import {
   Trash2,
   ChevronDown,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  UsersRound,
+  CheckCircle2,
+  XCircle
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -39,6 +44,7 @@ import {
   removeCollaborator,
   listAllCollaborators,
   removeCollaboratorFromAllRepos,
+  addCollaboratorToMultipleRepos,
   Repository,
   Collaborator,
   Invitation,
@@ -60,6 +66,14 @@ export function Dashboard() {
   const [invitePermission, setInvitePermission] = useState('push');
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [inviting, setInviting] = useState(false);
+  
+  // Bulk invite state
+  const [bulkInviteDialogOpen, setBulkInviteDialogOpen] = useState(false);
+  const [bulkInviteUsername, setBulkInviteUsername] = useState('');
+  const [bulkInvitePermission, setBulkInvitePermission] = useState('push');
+  const [selectedReposForBulk, setSelectedReposForBulk] = useState<Set<number>>(new Set());
+  const [bulkInviting, setBulkInviting] = useState(false);
+  const [bulkInviteResults, setBulkInviteResults] = useState<{ success: string[]; failed: Array<{ repo: string; error: string }> } | null>(null);
   
   // User-based view state
   const [accessMode, setAccessMode] = useState<'repo' | 'user'>('repo');
@@ -224,6 +238,64 @@ export function Dashboard() {
     }
   };
 
+  const handleBulkInvite = async () => {
+    if (!user || !bulkInviteUsername.trim() || selectedReposForBulk.size === 0) return;
+    
+    try {
+      setBulkInviting(true);
+      setBulkInviteResults(null);
+      
+      const reposToInvite = repos
+        .filter(repo => selectedReposForBulk.has(repo.id))
+        .map(repo => ({ owner: repo.owner.login, name: repo.name }));
+      
+      const results = await addCollaboratorToMultipleRepos(
+        user.id,
+        bulkInviteUsername.trim(),
+        reposToInvite,
+        bulkInvitePermission
+      );
+      
+      setBulkInviteResults(results);
+      
+      if (results.success.length > 0) {
+        toast.success(`Successfully invited ${bulkInviteUsername} to ${results.success.length} repository${results.success.length !== 1 ? 'ies' : 'y'}`);
+      }
+      if (results.failed.length > 0) {
+        toast.error(`Failed to invite to ${results.failed.length} repository${results.failed.length !== 1 ? 'ies' : 'y'}`);
+      }
+      
+      // Refresh collaborators if a selected repo was in the list
+      if (selectedRepo && selectedReposForBulk.has(selectedRepo.id)) {
+        loadCollaborators(selectedRepo);
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to send bulk invitations');
+    } finally {
+      setBulkInviting(false);
+    }
+  };
+
+  const toggleRepoSelection = (repoId: number) => {
+    setSelectedReposForBulk(prev => {
+      const next = new Set(prev);
+      if (next.has(repoId)) {
+        next.delete(repoId);
+      } else {
+        next.add(repoId);
+      }
+      return next;
+    });
+  };
+
+  const selectAllRepos = () => {
+    setSelectedReposForBulk(new Set(repos.map(r => r.id)));
+  };
+
+  const deselectAllRepos = () => {
+    setSelectedReposForBulk(new Set());
+  };
+
   const handleRemoveFromAllRepos = async () => {
     if (!user || !selectedUserToRemove) return;
     
@@ -366,16 +438,198 @@ export function Dashboard() {
 
             {/* Repo-based View */}
             {accessMode === 'repo' && (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Repositories Panel */}
-                <Card className="lg:col-span-1 border-border/50 glass-effect">
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg">Repositories</CardTitle>
-                      <Button variant="ghost" size="icon" onClick={loadRepositories}>
-                        <RefreshCw className="h-4 w-4" />
+              <div className="space-y-6">
+                {/* Bulk Invite Button */}
+                <div className="flex justify-end">
+                  <Dialog open={bulkInviteDialogOpen} onOpenChange={setBulkInviteDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="bg-gradient-golden hover:opacity-90 text-primary-foreground shadow-golden">
+                        <UsersRound className="h-4 w-4 mr-2" />
+                        Bulk Invite
                       </Button>
-                    </div>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+                      <DialogHeader>
+                        <DialogTitle className="text-2xl">Bulk Invite Collaborator</DialogTitle>
+                        <DialogDescription>
+                          Invite a GitHub user to multiple repositories at once
+                        </DialogDescription>
+                      </DialogHeader>
+                      
+                      <div className="flex-1 overflow-y-auto space-y-6 py-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="bulk-invite-username" className="text-sm font-medium">GitHub Username</Label>
+                          <Input
+                            id="bulk-invite-username"
+                            placeholder="username"
+                            value={bulkInviteUsername}
+                            onChange={(e) => {
+                              setBulkInviteUsername(e.target.value);
+                              setBulkInviteResults(null);
+                            }}
+                            className="h-11"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Label htmlFor="bulk-invite-permission" className="text-sm font-medium">Permission Level</Label>
+                          <Select value={bulkInvitePermission} onValueChange={setBulkInvitePermission}>
+                            <SelectTrigger id="bulk-invite-permission" className="h-11">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="pull">Read</SelectItem>
+                              <SelectItem value="push">Write</SelectItem>
+                              <SelectItem value="admin">Admin</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-sm font-medium">Select Repositories</Label>
+                            <div className="flex gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={selectAllRepos}
+                                disabled={repos.length === 0}
+                              >
+                                Select All
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={deselectAllRepos}
+                                disabled={selectedReposForBulk.size === 0}
+                              >
+                                Deselect All
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="border border-border/50 rounded-lg p-4 max-h-[300px] overflow-y-auto">
+                            {repos.length === 0 ? (
+                              <p className="text-sm text-muted-foreground text-center py-4">
+                                No repositories available
+                              </p>
+                            ) : (
+                              <div className="space-y-2">
+                                {repos.map((repo) => (
+                                  <div
+                                    key={repo.id}
+                                    className="flex items-center gap-3 p-2 rounded hover:bg-accent/50 transition-colors"
+                                  >
+                                    <Checkbox
+                                      id={`repo-${repo.id}`}
+                                      checked={selectedReposForBulk.has(repo.id)}
+                                      onCheckedChange={() => toggleRepoSelection(repo.id)}
+                                    />
+                                    <label
+                                      htmlFor={`repo-${repo.id}`}
+                                      className="flex-1 cursor-pointer flex items-center gap-2"
+                                    >
+                                      <GitBranch className="h-4 w-4 text-muted-foreground" />
+                                      <span className="font-mono text-sm">{repo.full_name}</span>
+                                      {repo.private && (
+                                        <Lock className="h-3 w-3 text-muted-foreground" />
+                                      )}
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {selectedReposForBulk.size} of {repos.length} repository{repos.length !== 1 ? 'ies' : 'y'} selected
+                          </p>
+                        </div>
+
+                        {bulkInviteResults && (
+                          <div className="space-y-3 border-t border-border pt-4">
+                            <h4 className="text-sm font-medium">Invitation Results</h4>
+                            {bulkInviteResults.success.length > 0 && (
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2 text-sm text-success">
+                                  <CheckCircle2 className="h-4 w-4" />
+                                  <span className="font-medium">Successfully invited ({bulkInviteResults.success.length})</span>
+                                </div>
+                                <ScrollArea className="h-24 border border-border/50 rounded p-2">
+                                  <div className="space-y-1">
+                                    {bulkInviteResults.success.map((repo) => (
+                                      <div key={repo} className="text-xs font-mono text-muted-foreground">
+                                        {repo}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </ScrollArea>
+                              </div>
+                            )}
+                            {bulkInviteResults.failed.length > 0 && (
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2 text-sm text-destructive">
+                                  <XCircle className="h-4 w-4" />
+                                  <span className="font-medium">Failed ({bulkInviteResults.failed.length})</span>
+                                </div>
+                                <ScrollArea className="h-24 border border-border/50 rounded p-2">
+                                  <div className="space-y-1">
+                                    {bulkInviteResults.failed.map((item, idx) => (
+                                      <div key={idx} className="text-xs">
+                                        <span className="font-mono">{item.repo}</span>
+                                        <span className="text-muted-foreground ml-2">- {item.error}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </ScrollArea>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      <DialogFooter>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setBulkInviteDialogOpen(false);
+                            setBulkInviteUsername('');
+                            setSelectedReposForBulk(new Set());
+                            setBulkInviteResults(null);
+                          }}
+                        >
+                          Close
+                        </Button>
+                        <Button
+                          onClick={handleBulkInvite}
+                          disabled={bulkInviting || !bulkInviteUsername.trim() || selectedReposForBulk.size === 0}
+                          className="bg-gradient-golden hover:opacity-90 text-primary-foreground"
+                        >
+                          {bulkInviting ? (
+                            <>
+                              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                              Inviting...
+                            </>
+                          ) : (
+                            <>
+                              <UserPlus className="h-4 w-4 mr-2" />
+                              Invite to {selectedReposForBulk.size} Repository{selectedReposForBulk.size !== 1 ? 'ies' : 'y'}
+                            </>
+                          )}
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Repositories Panel */}
+                  <Card className="lg:col-span-1 border-border/50 glass-effect">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg">Repositories</CardTitle>
+                        <Button variant="ghost" size="icon" onClick={loadRepositories}>
+                          <RefreshCw className="h-4 w-4" />
+                        </Button>
+                      </div>
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
@@ -595,6 +849,7 @@ export function Dashboard() {
                     )}
                   </CardContent>
                 </Card>
+                </div>
               </div>
             )}
 

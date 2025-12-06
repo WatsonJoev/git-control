@@ -198,3 +198,28 @@ export async function removeCollaboratorFromAllRepos(
 
   return { success, failed };
 }
+
+export async function addCollaboratorToMultipleRepos(
+  userId: string,
+  username: string,
+  repos: { owner: string; name: string }[],
+  permission: string = 'push'
+): Promise<{ success: string[]; failed: Array<{ repo: string; error: string }> }> {
+  const success: string[] = [];
+  const failed: Array<{ repo: string; error: string }> = [];
+
+  // Add to repos sequentially to avoid rate limiting
+  for (const repo of repos) {
+    try {
+      await addCollaborator(userId, repo.owner, repo.name, username, permission);
+      success.push(`${repo.owner}/${repo.name}`);
+    } catch (error: any) {
+      failed.push({
+        repo: `${repo.owner}/${repo.name}`,
+        error: error.message || 'Unknown error',
+      });
+    }
+  }
+
+  return { success, failed };
+}
