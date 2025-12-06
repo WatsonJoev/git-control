@@ -10,7 +10,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
-  Github, 
   LogOut, 
   Users, 
   UserPlus, 
@@ -24,7 +23,8 @@ import {
   User,
   Trash2,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  Sparkles
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -297,12 +297,15 @@ export function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border sticky top-0 z-10 bg-background">
+    <div className="min-h-screen bg-background bg-gradient-subtle">
+      {/* Background pattern */}
+      <div className="fixed inset-0 bg-dot-pattern opacity-30 pointer-events-none" />
+      
+      <header className="border-b border-border/50 sticky top-0 z-10 backdrop-blur-sm bg-background/80">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Github className="h-6 w-6" />
-            <span className="font-semibold">CollabManager</span>
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="CollabManager" className="h-8 w-8" />
+            <span className="font-semibold font-mono text-gradient">CollabManager</span>
           </div>
           
           <div className="flex items-center gap-4">
@@ -325,17 +328,19 @@ export function Dashboard() {
 
       <main className="container mx-auto px-4 py-8">
         {!githubConnected ? (
-          <Card className="max-w-md mx-auto border-border animate-fade-in">
+          <Card className="max-w-md mx-auto border-border/50 glass-effect shadow-golden-lg animate-fade-in">
             <CardHeader className="text-center">
-              <Github className="h-12 w-12 mx-auto mb-4" />
-              <CardTitle>Connect GitHub</CardTitle>
-              <CardDescription>
+              <div className="w-20 h-20 rounded-2xl bg-gradient-golden flex items-center justify-center mx-auto mb-4 shadow-golden animate-glow">
+                <img src="/logo.png" alt="CollabManager" className="h-12 w-12" />
+              </div>
+              <CardTitle className="text-2xl">Connect GitHub</CardTitle>
+              <CardDescription className="text-base">
                 Connect your GitHub account to manage repository collaborators
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="default" className="w-full" onClick={connectGitHub}>
-                <Github className="h-5 w-5 mr-2" />
+              <Button className="w-full h-12 bg-gradient-golden hover:opacity-90 text-primary-foreground font-semibold shadow-golden transition-all duration-300" onClick={connectGitHub}>
+                <Sparkles className="h-5 w-5 mr-2" />
                 Connect with GitHub
               </Button>
               <p className="text-xs text-muted-foreground text-center mt-4">
@@ -347,12 +352,12 @@ export function Dashboard() {
           <div className="animate-fade-in">
             {/* Access Mode Tabs */}
             <Tabs value={accessMode} onValueChange={(v) => setAccessMode(v as 'repo' | 'user')} className="mb-6">
-              <TabsList className="grid w-full max-w-md grid-cols-2">
-                <TabsTrigger value="repo" className="flex items-center gap-2">
+              <TabsList className="grid w-full max-w-md grid-cols-2 bg-muted/50 p-1">
+                <TabsTrigger value="repo" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                   <GitBranch className="h-4 w-4" />
                   Repository Access
                 </TabsTrigger>
-                <TabsTrigger value="user" className="flex items-center gap-2">
+                <TabsTrigger value="user" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
                   <User className="h-4 w-4" />
                   User Access
                 </TabsTrigger>
@@ -363,7 +368,7 @@ export function Dashboard() {
             {accessMode === 'repo' && (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Repositories Panel */}
-                <Card className="lg:col-span-1 border-border">
+                <Card className="lg:col-span-1 border-border/50 glass-effect">
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg">Repositories</CardTitle>
@@ -400,8 +405,8 @@ export function Dashboard() {
                           {filteredRepos.map((repo) => (
                             <button
                               key={repo.id}
-                              className={`w-full p-4 text-left hover:bg-accent transition-colors ${
-                                selectedRepo?.id === repo.id ? 'bg-accent' : ''
+                              className={`w-full p-4 text-left hover:bg-primary/10 transition-all duration-200 ${
+                                selectedRepo?.id === repo.id ? 'bg-primary/15 border-l-2 border-primary' : ''
                               }`}
                               onClick={() => loadCollaborators(repo)}
                             >
@@ -433,7 +438,7 @@ export function Dashboard() {
                 </Card>
 
                 {/* Collaborators Panel */}
-                <Card className="lg:col-span-2 border-border">
+                <Card className="lg:col-span-2 border-border/50 glass-effect">
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div>
@@ -454,7 +459,7 @@ export function Dashboard() {
                       {selectedRepo && (
                         <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
                           <DialogTrigger asChild>
-                            <Button size="sm">
+                            <Button size="sm" className="bg-gradient-golden hover:opacity-90 text-primary-foreground shadow-golden">
                               <UserPlus className="h-4 w-4 mr-2" />
                               Invite
                             </Button>
@@ -493,7 +498,7 @@ export function Dashboard() {
                               <Button variant="outline" onClick={() => setInviteDialogOpen(false)}>
                                 Cancel
                               </Button>
-                              <Button onClick={handleInvite} disabled={inviting || !inviteUsername.trim()}>
+                              <Button onClick={handleInvite} disabled={inviting || !inviteUsername.trim()} className="bg-gradient-golden hover:opacity-90 text-primary-foreground">
                                 {inviting ? 'Sending...' : 'Send Invitation'}
                               </Button>
                             </DialogFooter>
@@ -552,7 +557,7 @@ export function Dashboard() {
                             collaborators.map((collab) => (
                               <div
                                 key={collab.id}
-                                className="flex items-center justify-between p-3 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors"
+                                className="flex items-center justify-between p-3 rounded-xl bg-card/50 border border-border/50 hover:border-primary/30 transition-all duration-200"
                               >
                                 <div className="flex items-center gap-3">
                                   <Avatar className="h-10 w-10">
@@ -595,7 +600,7 @@ export function Dashboard() {
 
             {/* User-based View */}
             {accessMode === 'user' && (
-              <Card className="border-border">
+              <Card className="border-border/50 glass-effect">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div>
@@ -640,8 +645,8 @@ export function Dashboard() {
                       {filteredUsers.map((aggUser) => {
                         const isExpanded = expandedUsers.has(aggUser.login);
                         return (
-                          <div key={aggUser.login} className="border border-border rounded-lg overflow-hidden">
-                            <div className="flex items-center justify-between p-4 bg-secondary/30 hover:bg-secondary/50 transition-colors">
+                          <div key={aggUser.login} className="border border-border/50 rounded-xl overflow-hidden golden-border-hover transition-all duration-200">
+                            <div className="flex items-center justify-between p-4 bg-card/50 hover:bg-primary/5 transition-colors">
                               <button 
                                 className="flex items-center gap-3 flex-1 text-left"
                                 onClick={() => toggleUserExpanded(aggUser.login)}
