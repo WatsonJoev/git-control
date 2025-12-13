@@ -4,6 +4,9 @@ Thank you for your interest in contributing to CollabManager! This document prov
 
 ## Code of Conduct
 
+This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to the project maintainers.
+
+Key principles:
 - Be respectful and inclusive
 - Welcome newcomers and help them learn
 - Focus on constructive feedback
@@ -13,7 +16,7 @@ Thank you for your interest in contributing to CollabManager! This document prov
 
 ### Reporting Bugs
 
-1. Check if the bug has already been reported in [Issues](https://github.com/yourusername/collabmanager/issues)
+1. Check if the bug has already been reported in [Issues](https://github.com/WatsonJoev/git-control/issues)
 2. If not, create a new issue with:
    - Clear title and description
    - Steps to reproduce
@@ -23,7 +26,7 @@ Thank you for your interest in contributing to CollabManager! This document prov
 
 ### Suggesting Features
 
-1. Check existing [Issues](https://github.com/yourusername/collabmanager/issues) and [Discussions](https://github.com/yourusername/collabmanager/discussions)
+1. Check existing [Issues](https://github.com/WatsonJoev/git-control/issues) and [Discussions](https://github.com/WatsonJoev/git-control/discussions)
 2. Open a new issue with:
    - Clear description of the feature
    - Use case and benefits
@@ -125,8 +128,8 @@ Thank you for your interest in contributing to CollabManager! This document prov
 
 ## Questions?
 
-- Open a [Discussion](https://github.com/yourusername/collabmanager/discussions)
-- Check existing [Issues](https://github.com/yourusername/collabmanager/issues)
+- Open a [Discussion](https://github.com/WatsonJoev/git-control/discussions)
+- Check existing [Issues](https://github.com/WatsonJoev/git-control/issues)
 - Reach out to maintainers
 
 Thank you for contributing to CollabManager! 🎉

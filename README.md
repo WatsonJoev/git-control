@@ -57,8 +57,8 @@
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/collabmanager.git
-   cd collabmanager
+   git clone https://github.com/WatsonJoev/git-control.git
+   cd git-control
    ```
 
 2. **Install dependencies**
@@ -173,7 +173,7 @@
 ### Project Structure
 
 ```
-collabmanager/
+git-control/
 ├── src/
 │   ├── components/      # React components
 │   │   ├── Dashboard.tsx    # Main dashboard
@@ -294,9 +294,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/collabmanager/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/collabmanager/discussions)
-- **Email**: [your-email@example.com]
+- **Issues**: [GitHub Issues](https://github.com/WatsonJoev/git-control/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/WatsonJoev/git-control/discussions)
+- **Email**: mailtowilliam93@gmail.com
 
 ---
 
@@ -304,6 +304,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ for efficient GitHub collaboration management**
 
-[⭐ Star us on GitHub](https://github.com/yourusername/collabmanager) • [📖 Documentation](#-documentation) • [🐛 Report Bug](https://github.com/yourusername/collabmanager/issues)
+[⭐ Star us on GitHub](https://github.com/WatsonJoev/git-control) • [📖 Documentation](#-documentation) • [🐛 Report Bug](https://github.com/WatsonJoev/git-control/issues)
 
 </div>

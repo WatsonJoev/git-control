@@ -13,7 +13,7 @@ We actively support the following versions with security updates:
 We take security vulnerabilities seriously. If you discover a security vulnerability, please follow these steps:
 
 1. **Do NOT** open a public GitHub issue
-2. Email security concerns to: [your-email@example.com] (replace with your email)
+2. Email security concerns to: [mailtowilliam93@gmail.com]
 3. Include:
    - Description of the vulnerability
    - Steps to reproduce
